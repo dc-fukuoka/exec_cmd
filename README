@@ -10,7 +10,7 @@ ex)
 $ cat /tmp/test.sh
 #!/bin/sh
 echo $* >> /tmp/log
-$ echo "/tmp/test.sh thxis is a test." > /proc/exec_cmd
+$ echo "/tmp/test.sh this is a test." > /proc/exec_cmd
 $ cat /tmp/log
 this is a test.
 
