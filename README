@@ -1,0 +1,17 @@
+exec_cmd - execute a user space program from the kernel space.
+           kernel development package is required to build.
+$ make
+$ insmod exec_cmd.ko
+$ echo "<commandline>" > /proc/exec_cmd
+$ rmmod exec_cmd
+
+ex)
+$ cat /tmp/test.sh
+#!/bin/sh
+echo $* >> /tmp/log
+$ echo "/tmp/test.sh thxis is a test." > /proc/exec_cmd
+$ cat /tmp/log
+this is a test.
+
+if debug is needed, please do "echo 1 > /sys/module/exec_cmd/parameters/debug".
+some debug messages will apear in dmesg/syslog.
