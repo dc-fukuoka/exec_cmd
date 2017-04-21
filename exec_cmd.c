@@ -43,6 +43,8 @@ static int myparse_args(char *arg, int *argc, char ***argv)
         char *p;
         int i;
 
+	*argc = 0;
+	
         /* count argc */
         for (p=arg; *p; p++) {
                 if (*p == ' ') {
@@ -57,7 +59,6 @@ static int myparse_args(char *arg, int *argc, char ***argv)
 		if (*p == '\n')
 			*p = '\0';
         }
-	*argc = 0;
         (*argc)++; /* for additional NULL argument */
         *argv = (char**)kmalloc(sizeof(**argv)*(*argc), GFP_KERNEL);
 	if (!(*argv))
