@@ -1,6 +1,7 @@
 exec_cmd - execute a user space program from the kernel space.
            kernel development package is required to build.
 	   this was tested on 2.6.32, some modifications are required for newer kernel.
+	   please note that the executor becomes root even if a normal user is used.
 $ make
 $ insmod exec_cmd.ko
 $ echo "<commandline>" > /proc/exec_cmd
