@@ -1,8 +1,10 @@
 #include <linux/module.h>
 #include <linux/init.h>
 #include <linux/kmod.h>
-#include <asm/uaccess.h>   /* copy_from_user()    */
-#include <linux/proc_fs.h> /* create_proc_entry() */
+#include <asm/uaccess.h>
+#include <linux/proc_fs.h>
+#include <linux/init.h>
+#include <linux/slab.h>
 
 MODULE_LICENSE("GPL");
 
@@ -31,7 +33,7 @@ static int exec_userspace_func(int argc, char **argv)
 			printk(KERN_DEBUG "argv[%d]: \"%s\"\n", i, argv[i]);
 	}
 	
-	sub_info = call_usermodehelper_setup(argv[0], argv, envp, GFP_ATOMIC);
+	sub_info = call_usermodehelper_setup(argv[0], argv, envp, GFP_ATOMIC, NULL, NULL, NULL);
 	if (!sub_info)
 		return -ENOMEM;
 
@@ -82,14 +84,14 @@ static inline void myfree_args(char **argv)
 }
 
 /* write_proc(), read_proc(): callbacks for entry */
-static int write_proc(struct file *file, const char __user *buffer, unsigned long count, void *data)
+static ssize_t write_proc(struct file *file, const char __user *buffer, size_t user_len, loff_t *offset)
 {
 	char buf[BUFSIZE];
 	int argc = 0;
 	char **argv = NULL;
 	int err = 0;
 	memset(buf, '\0', sizeof(buf));
-	if (copy_from_user(buf, buffer, count)) {
+	if (copy_from_user(buf, buffer, user_len)) {
 		printk(KERN_ERR "copy_from_user() failed in %s\n", __func__);
 		return -EFAULT;
 	}
@@ -102,27 +104,30 @@ static int write_proc(struct file *file, const char __user *buffer, unsigned lon
 	if (err)
 		goto err;
 	myfree_args(argv);
-	return count;
+	return user_len;
 err:
 	return err;
 }
 
-static int read_proc(char *page, char **start, off_t off, int count, int *eof, void *data)
+static ssize_t read_proc(struct file *fp, char __user *buffer, size_t user_len, loff_t *offset)
 {
 	return 0;
 }
+
+static const struct file_operations proc_fops = {
+	.owner = THIS_MODULE,
+	.read  = read_proc,
+	.write = write_proc,
+};
 
 static int __init exec_cmd_init(void)
 {
 	struct proc_dir_entry *entry = NULL;
 
-        entry = create_proc_entry(PROCNAME, 0666, NULL);
-        if (entry) {
-                entry->write_proc = write_proc;
-                entry->read_proc  = read_proc;
-        } else {
+        entry = proc_create(PROCNAME, S_IRUGO | S_IWUGO | S_IXUGO, NULL, &proc_fops);
+        if (!entry) {
                 printk(KERN_ERR "%s(): create_proc_entry() failed.\n", __func__);
-                return -EBUSY;
+                return -ENOMEM;
         }
 	return 0;
 }
