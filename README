@@ -16,4 +16,4 @@ $ cat /tmp/log
 this is a test.
 
 if debug is needed, please do "echo 1 > /sys/module/exec_cmd/parameters/debug".
-some debug messages will apear in dmesg/syslog.
+some debug messages will apear in dmesg.
