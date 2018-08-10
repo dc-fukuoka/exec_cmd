@@ -124,7 +124,7 @@ static int __init exec_cmd_init(void)
 {
 	struct proc_dir_entry *entry = NULL;
 
-        entry = proc_create(PROCNAME, S_IRUGO | S_IWUGO | S_IXUGO, NULL, &proc_fops);
+        entry = proc_create(PROCNAME, S_IRUGO | S_IWUGO, NULL, &proc_fops);
         if (!entry) {
                 printk(KERN_ERR "%s(): create_proc_entry() failed.\n", __func__);
                 return -ENOMEM;
