@@ -106,6 +106,7 @@ static ssize_t write_proc(struct file *file, const char __user *buffer, size_t u
 	myfree_args(argv);
 	return user_len;
 err:
+	myfree_args(argv);
 	return err;
 }
 
