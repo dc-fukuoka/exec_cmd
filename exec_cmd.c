@@ -12,7 +12,7 @@ MODULE_LICENSE("GPL");
 #define PROCNAME "exec_cmd"
 
 static int debug = 0;
-/* S_IRUGO: read S_IWUSR: write */
+/* S_IRUGO: read S_IWUSR: write, 644 */
 module_param(debug, int, S_IRUGO|S_IWUSR);
 MODULE_PARM_DESC(debug, "debug flag, 0:disabled, 1:enabled");
 
@@ -125,7 +125,7 @@ static int __init exec_cmd_init(void)
 {
 	struct proc_dir_entry *entry = NULL;
 
-        entry = proc_create(PROCNAME, S_IRUGO | S_IWUGO, NULL, &proc_fops);
+        entry = proc_create(PROCNAME, S_IRUGO|S_IWUGO, NULL, &proc_fops);
         if (!entry) {
                 printk(KERN_ERR "%s:%d in %s(): create_proc_entry() failed.\n", __FILE__, __LINE__, __func__);
                 return -ENOMEM;
