@@ -126,9 +126,10 @@ static int __init exec_cmd_init(void)
 
         entry = proc_create(PROCNAME, S_IRUGO | S_IWUGO, NULL, &proc_fops);
         if (!entry) {
-                printk(KERN_ERR "%s(): create_proc_entry() failed.\n", __func__);
+                printk(KERN_ERR "%s:%d in %s(): create_proc_entry() failed.\n", __FILE__, __LINE__, __func__);
                 return -ENOMEM;
         }
+	printk(KERN_INFO PROCNAME" loaded\n");
 	return 0;
 }
 
@@ -136,6 +137,7 @@ static int __init exec_cmd_init(void)
 static void __exit exec_cmd_exit(void)
 {
 	remove_proc_entry(PROCNAME, NULL);
+	printk(KERN_INFO PROCNAME" unloaded\n");
 }
 
 module_init(exec_cmd_init);
