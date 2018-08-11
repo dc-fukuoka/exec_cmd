@@ -92,7 +92,7 @@ static ssize_t write_proc(struct file *file, const char __user *buffer, size_t u
 	int err = 0;
 	memset(buf, '\0', sizeof(buf));
 	if (copy_from_user(buf, buffer, user_len)) {
-		printk(KERN_ERR "copy_from_user() failed in %s\n", __func__);
+		printk(KERN_ERR "%s:%d in %s(): copy_from_user() failed\n", __FILE__, __LINE__, __func__);
 		return -EFAULT;
 	}
 	if (debug)
